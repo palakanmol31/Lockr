@@ -1,110 +1,107 @@
 package com.lockr.cse535team.lockr;
 
 
-import android.app.Activity;
-        import android.app.Dialog;
-import android.app.FragmentManager;
-import android.content.Intent;
-        import android.os.Bundle;
-import android.provider.Settings;
+import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-        import android.widget.EditText;
-        import android.widget.Toast;
+import android.view.MenuItem;
 
-import com.mikepenz.iconics.typeface.FontAwesome;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.Nameable;
-import com.mikepenz.materialdrawer.util.KeyboardUtil;
+public class MainActivity extends AppCompatActivity {
+    SessionClass sessionClass;
+    private DrawerLayout mDrawer;
+    private Toolbar toolbar;
+    private NavigationView nvDrawer;
+    private ActionBarDrawerToggle drawerToggle;
 
-import java.io.Console;
 
-import static com.lockr.cse535team.lockr.R.id.editTextPassword;
-        import static com.lockr.cse535team.lockr.R.id.editTextUserName;
-
-public class MainActivity extends AppCompatActivity{
-   SessionClass sessionClass;
-    android.support.v4.app.FragmentManager fragmentManager;
-    private Drawer.Result result = null;
-    int i= 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         sessionClass = new SessionClass(this);
         super.onCreate(savedInstanceState);
         sessionClass.checkLogin();
         setContentView(R.layout.activity_main);
-        fragmentManager = getSupportFragmentManager();
-        // Handle Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-
-        result = new Drawer()
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .addDrawerItems(
-                        new PrimaryDrawerItem().withName("All Applications").withIcon(FontAwesome.Icon.faw_home),
-                        new PrimaryDrawerItem().withName("Locked Applications").withIcon(FontAwesome.Icon.faw_lock),
-                        new PrimaryDrawerItem().withName("Unlocked Applications").withIcon(FontAwesome.Icon.faw_unlock),
-                        new PrimaryDrawerItem().withName("Change Password").withIcon(FontAwesome.Icon.faw_exchange),
-                        new PrimaryDrawerItem().withName("Allow Access").withIcon(FontAwesome.Icon.faw_share)
-                ) // add the items we want to use with our Drawer
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
-                        if (drawerItem != null && drawerItem instanceof Nameable) {
-
-                            if (position == 0) {
-
-                            }
-
-                            if (position == 1) {
-                                                            }
-
-                            if (position == 2) {
-
-                            }
-
-                            if (position == 3) {
-
-                            }
-
-                            if (position == 4) {
-
-                            }
-
-                        }
-                    }
-                })
-                .withOnDrawerListener(new Drawer.OnDrawerListener() {
-                    @Override
-                    public void onDrawerOpened(View drawerView) {
-                        KeyboardUtil.hideKeyboard(MainActivity.this);
-                    }
-
-
-                    @Override
-                    public void onDrawerClosed(View drawerView) {
-
-
-                    }
-                })
-                .withFireOnInitialOnClick(true)
-                .withSavedInstance(savedInstanceState)
-                .build();
-
-
-        //react on the keyboard
-        result.keyboardSupportEnabled(this, true);
-        }
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        nvDrawer = (NavigationView) findViewById(R.id.nvView);
+        setupDrawerContent(nvDrawer);
     }
 
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawer.openDrawer(GravityCompat.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        selectDrawerItem(menuItem);
+                        return true;
+                    }
+                });
+    }
+
+    public void selectDrawerItem(MenuItem menuItem) {
+        // Create a new fragment and specify the fragment to show based on nav item clicked
+        Fragment fragment = null;
+        Class fragmentClass;
+
+        switch(menuItem.getItemId()) {
+
+            case R.id.nav_all_apps:
+                fragmentClass = AllAppsActivity.class;
+                break;
+
+            case R.id.nav_locked_apps:
+                fragmentClass = lockedApps.class;
+                break;
+
+            case R.id.nav_unlocked_apps:
+                fragmentClass = unlockedApps.class;
+                break;
+
+            case R.id.nav_settings:
+                fragmentClass = settings.class;
+                break;
+
+            case R.id.nav_logout:
+                fragmentClass = logoutActivity.class;
+
+            default:
+                fragmentClass = AllAppsActivity.class;
+        }
+
+
+
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+
+        menuItem.setChecked(true);
+        setTitle(menuItem.getTitle());
+
+        mDrawer.closeDrawers();
+
+    }
+}
 
 
 

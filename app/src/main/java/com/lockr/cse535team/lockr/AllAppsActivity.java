@@ -47,7 +47,7 @@ public class AllAppsActivity extends Activity {
             boolean result = true;
 
             switch (item.getItemId()) {
-                case R.id.menu_about: {
+                case R.id.nav_all_apps: {
                     displayAboutDialog();
                     break;
                 }
