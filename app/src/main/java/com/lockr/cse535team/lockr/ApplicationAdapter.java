@@ -8,7 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ListView;
+import android.widget.ToggleButton;
 
 import java.util.List;
 
@@ -63,6 +70,27 @@ public class ApplicationAdapter extends ArrayAdapter<ApplicationInfo> {
             packageName.setText(applicationInfo.packageName);
             iconview.setImageDrawable(applicationInfo.loadIcon(packageManager));
         }
+       // final TableRow Tr=(TableRow) view.findViewById(R.id.nav_allApps);
+
+        final ToggleButton toggleButton = (ToggleButton) view.findViewById(R.id.togglebutton);
+        toggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // Toast.makeText(context, ApplicationAdapter[applicationInfo], Toast.LENGTH_SHORT).show());
+
+                if(toggleButton.isActivated()==true)      //selected
+                {
+                    toggleButton.setEnabled(false);;
+
+                }
+                else
+                {
+                    toggleButton.setEnabled(true);
+
+                }
+
+            }
+        });
         return view;
     }
 };
