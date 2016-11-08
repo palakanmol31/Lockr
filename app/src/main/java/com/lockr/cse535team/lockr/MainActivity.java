@@ -88,9 +88,14 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         LogoutActivity newFragment;
+        AppListing Fragment1;
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
         if (id == R.id.nav_allApps){
+            Fragment1 = new AppListing();
+            transaction.replace(R.id.content_main, Fragment1);
+            transaction.addToBackStack(null);
+            transaction.commit();
 
         } else if (id == R.id.nav_lockedApps) {
 
