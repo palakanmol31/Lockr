@@ -19,7 +19,16 @@
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 
-    <ScrollView
+    <RelativeLayout
+        android:layout_width="284dp"
+        android:layout_height="100dp">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/lock"/>
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -70,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/action_sign_in_short"
+                android:background="#ADD8E6"
                 android:textStyle="bold" />
 
             <Button
@@ -79,8 +89,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Sign up"
+                android:background="#ADD8E6"
                 android:textStyle="bold" />
 
         </LinearLayout>
-    </ScrollView>
+
+        <Button
+            android:text="Forgot Password?"
+            style="?android:textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/email_login_form"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="26dp"
+            android:id="@+id/forgotPassword"
+            android:background="#ffffff"/>
+
+    </RelativeLayout>
+
 </LinearLayout>

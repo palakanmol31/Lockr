@@ -9,11 +9,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
 public class SignUPActivity extends Activity {
     EditText editTextUserName, editTextPassword, editTextConfirmPassword;
     Button btnCreateAccount;
     Context context = this;
     LoginDataBaseAdapter loginDataBaseAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
