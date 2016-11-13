@@ -32,7 +32,7 @@ public class AllAppsActivity extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.list_all);
+//        setContentView(R.layout.list_all);
 
         packageManager = getPackageManager();
 
