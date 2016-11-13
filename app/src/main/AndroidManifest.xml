@@ -59,6 +59,12 @@
             android:name=".ScreenLock"
             android:label="Lockr"
             android:excludeFromRecents="true"></activity>
+
+        <activity
+            android:name=".LoadingActivity"
+            android:label="Lockr"
+            android:excludeFromRecents="true"></activity>
+
         <activity
             android:name=".AllAppsActivity"
             android:label="@string/app_name"
