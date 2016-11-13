@@ -52,8 +52,12 @@
             android:label="@string/title_activity_login"
             android:excludeFromRecents="true"></activity>
         <activity
-            android:name=".ForgotPassword"
-            android:label="@string/title_activity_login"
+        android:name=".ForgotPassword"
+        android:label="@string/title_activity_login"
+        android:excludeFromRecents="true"></activity>
+        <activity
+            android:name=".ScreenLock"
+            android:label="Lockr"
             android:excludeFromRecents="true"></activity>
         <activity
             android:name=".AllAppsActivity"

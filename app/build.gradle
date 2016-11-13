@@ -32,8 +32,9 @@ dependencies {
     compile 'javax.mail:javax.mail-api:1.5.1'
     testCompile 'junit:junit:4.12'
     compile 'com.sun.mail:javax.mail:1.5.2'
+    compile 'com.takwolf.android:lock9view:0.0.2'
     compile 'com.google.code.gson:gson:2.2.4'
-    compile files('C:/Users/sdshah10/Downloads/Lockr-EmailUser_ForgotDB/Lockr-EmailUser/Lockr-EmailUser/libs/activation.jar')
-    compile files('C:/Users/sdshah10/Downloads/Lockr-EmailUser_ForgotDB/Lockr-EmailUser/Lockr-EmailUser/libs/additionnal.jar')
-    compile files('C:/Users/sdshah10/Downloads/Lockr-EmailUser_ForgotDB/Lockr-EmailUser/Lockr-EmailUser/libs/mail.jar')
+    compile files('C:/Users/rkotwal2/Downloads/rashik/Lockr/libs/activation.jar')
+    compile files('C:/Users/rkotwal2/Downloads/rashik/Lockr/libs/additionnal.jar')
+    compile files('C:/Users/rkotwal2/Downloads/rashik/Lockr/libs/mail.jar')
 }

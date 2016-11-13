@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        LockApp CheckCurrent = new LockApp(this);
+        CheckCurrent.start();
         Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
         startActivity(intent);
 
@@ -39,7 +41,6 @@ public class MainActivity extends AppCompatActivity
 
         sessionClass = new SessionClass(this);
         sessionClass.checkLogin();
-
 
 
         setContentView(R.layout.activity_main);
