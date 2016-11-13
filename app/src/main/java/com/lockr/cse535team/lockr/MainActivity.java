@@ -1,12 +1,17 @@
 package com.lockr.cse535team.lockr;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,17 +21,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-        SessionClass sessionClass;
-        LogoutActivity newFragment;
-        AppListing Fragment1;
+    SessionClass sessionClass;
+    LogoutActivity newFragment;
+    AllAppsActivity Fragment1;
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        context=getApplicationContext();
         sessionClass = new SessionClass(this);
         sessionClass.checkLogin();
         setContentView(R.layout.activity_main);
@@ -50,7 +63,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        }
+    }
 
 
     @Override
@@ -89,10 +102,11 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        if (id == R.id.nav_allApps){
-            Fragment1 = new AppListing();
+        if (id == R.id.nav_allApps) {
+            getSupportActionBar().setTitle("All Applications");
+            Fragment1 = new AllAppsActivity();
             transaction.replace(R.id.content_main, Fragment1);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -101,21 +115,75 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_unlockedApps) {
 
-        }
-        else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
 
-        }
-        else if(id == R.id.nav_logout) {
-            newFragment = new LogoutActivity();
-            transaction.replace(R.id.content_main, newFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+        } else if (id == R.id.nav_logout) {
+            Intent i = new Intent(this,
+                    LogoutActivity.class);
+            startActivity(i);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+    public static List<AppInfo> getListOfInstalledApp(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        List<AppInfo> installedApps = new ArrayList();
+        List<PackageInfo> apps = packageManager.getInstalledPackages(PackageManager.SIGNATURE_MATCH);
+        if (apps != null && !apps.isEmpty()) {
+
+            for (int i = 0; i < apps.size(); i++) {
+                PackageInfo p = apps.get(i);
+                ApplicationInfo appInfo = null;
+                try {
+                    appInfo = packageManager.getApplicationInfo(p.packageName, 0);
+                    AppInfo app = new AppInfo();
+                    app.setName(p.applicationInfo.loadLabel(packageManager).toString());
+                    app.setPackageName(p.packageName);
+                    app.setVersionName(p.versionName);
+                    app.setVersionCode(p.versionCode);
+                    app.setIcon(p.applicationInfo.loadIcon(packageManager));
+
+                    //check if the application is not an application system
+//                    Intent launchIntent = app.getLaunchIntent(context);
+//                    if (launchIntent != null && (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0)
+                    installedApps.add(app);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //sort the list of applications alphabetically
+//            if (installedApps.size() > 0) {
+//                Collections.sort(installedApps, new Comparator() {
+//
+//                    @Override
+//                    public int compare(final AppInfo app1, final AppInfo app2) {
+//                        return app1.getName().toLowerCase(Locale.getDefault()).compareTo(app2.getName().toLowerCase(Locale.getDefault()));
+//                    }
+//                });
+//            }
+            return installedApps;
+        }
+        return null;
+    }
+    @Override
+    protected void onStart() {
+        GoogleAnalytics.getInstance(context).reportActivityStart(this);
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        GoogleAnalytics.getInstance(context).reportActivityStop(this);
+        super.onStop();
+        super.onStop();
+    }
+
+
 }

@@ -1,161 +1,60 @@
 package com.lockr.cse535team.lockr;
 
-import android.app.AlertDialog;
-import android.app.ListActivity;
-import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.ListFragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ListView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.view.ViewGroup;
 
 /**
  * Created by rkotwal2 on 11/2/2016.
  */
 
-public class AllAppsActivity extends ListActivity {
-    private PackageManager packageManager = null;
-    private List<ApplicationInfo> applist = null;
-    private ApplicationAdapter listadaptor = null;
+public class AllAppsActivity extends ListFragment {
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    static String requiredAppsType;
+
+    public static AllAppsActivity newInstance(String requiredApps) {
+        requiredAppsType = requiredApps;
+        AllAppsActivity f = new AllAppsActivity();
+        return (f);
+    }
+
+
+    public AllAppsActivity() {
+        super();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.list_all);
-
-        packageManager = getPackageManager();
-
-        new LoadApplications().execute();
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
-        /* MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.my_options_menu, menu);
-        */
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        boolean result = true;
-
-        switch (item.getItemId()) {
-            /*case R.id.menu_about: {
-                displayAboutDialog();
-
-                break;
-            }*/
-            default: {
-                result = super.onOptionsItemSelected(item);
-
-                break;
-            }
-        }
-
-        return result;
-    }
-
-    private void displayAboutDialog() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("App Locker-Group27");
-        builder.setMessage("You are currently seeing all the installed apps on this phone");
-
-                /*builder.setPositiveButton("Know More", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://stacktips.com"));
-                        startActivity(browserIntent);
-                dialog.cancel();
-            }
-        });*/
-        builder.setNegativeButton("No Thanks!", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-    }
-
+    @Nullable
     @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ApplicationInfo app = applist.get(position);
-        try {
-            Intent intent = packageManager
-                    .getLaunchIntentForPackage(app.packageName);
+        View v = inflater.inflate(R.layout.list_all2, container, false);
+        mRecyclerView = (RecyclerView) v.findViewById(R.id.my_recycler_view);
 
-            if (null != intent) {
-                startActivity(intent);
-            }
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(AllAppsActivity.this, e.getMessage(),
-                    Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            Toast.makeText(AllAppsActivity.this, e.getMessage(),
-                    Toast.LENGTH_LONG).show();
-        }
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new ApplicationAdapter(((MainActivity) getActivity()).getListOfInstalledApp(getActivity()), getActivity(), requiredAppsType);
+        mRecyclerView.setAdapter(mAdapter);
+
+        return v;
+
     }
-
-    private List<ApplicationInfo> checkForLaunchIntent(List<ApplicationInfo> list) {
-        ArrayList<ApplicationInfo> applist = new ArrayList<ApplicationInfo>();
-        for (ApplicationInfo info : list) {
-            try {
-                if (null != packageManager.getLaunchIntentForPackage(info.packageName)) {
-                    applist.add(info);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        return applist;
-    }
-
-    private class LoadApplications extends AsyncTask<Void, Void, Void> {
-        private ProgressDialog progress = null;
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            applist = checkForLaunchIntent(packageManager.getInstalledApplications(PackageManager.GET_META_DATA));
-            listadaptor = new ApplicationAdapter(AllAppsActivity.this,
-                    R.layout.snippet_list_row, applist);
-
-            return null;
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            setListAdapter(listadaptor);
-            progress.dismiss();
-            super.onPostExecute(result);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            progress = ProgressDialog.show(AllAppsActivity.this, null,
-                    "Loading application info...");
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-        }
-    }
-        }
+}
