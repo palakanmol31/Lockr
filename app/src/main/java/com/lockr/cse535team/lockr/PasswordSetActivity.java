@@ -23,11 +23,11 @@ import java.util.ArrayList;
 
 public class PasswordSetActivity extends AppCompatActivity {
     ConnectPatternView view;;
-    Button confirmButton, retryButton;
+//    Button confirmButton, retryButton;
     TextView textView;
     boolean isEnteringFirstTime = true;
     boolean isEnteringSecondTime = false;
-    String enteredPassword = "", secondPassword="";
+    static String enteredPassword, secondPassword;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     Context context;
@@ -43,42 +43,11 @@ public class PasswordSetActivity extends AppCompatActivity {
         context = getApplicationContext();
         setContentView(R.layout.activity_password_set);
         view = (ConnectPatternView) findViewById(R.id.connect);
-        confirmButton = (Button) findViewById(R.id.confirm);
-        retryButton = (Button) findViewById(R.id.retry);
         textView = (TextView) findViewById(R.id.textView);
-        confirmButton.setEnabled(false);
-        retryButton.setEnabled(false);
         sharedPreferences = getSharedPreferences(AppLockConstants.MyPREFERENCES, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         patternData();
 
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("From", "Confirm entering");
-                if(!password_set) {
-                    Log.d("password set", "false");
-                    textView.setText("Re Draw Pattern");
-                    patternData();
-                }
-                else {
-                    Log.d("password set", "true");
-                    finish();
-                }
-
-            }
-        });
-        retryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isEnteringFirstTime = true;
-                isEnteringSecondTime = false;
-                editor.clear();
-                textView.setText("Draw Pattern");
-                confirmButton.setEnabled(false);
-                retryButton.setEnabled(false);
-            }
-        });
 
     }
     public void patternData(){
@@ -89,23 +58,32 @@ public class PasswordSetActivity extends AppCompatActivity {
                 if(isEnteringFirstTime) {
                     Log.d("isEnteringFirstTime", "From true value");
                     enteredPassword = String.valueOf(result);
-                    editor.putString("enteredpassword", enteredPassword);
-                    editor.commit();
+                    editor.putString("pinpassword", enteredPassword);
+                    textView.setText("Redraw Pattern");
                     isEnteringFirstTime = false;
+                    patternData();
                 }
                 else {
                     Log.d("isEnteringFirstTime", "From false value");
                     secondPassword = String.valueOf(result);
                     editor.putString("secondpassword", secondPassword);
-                    editor.commit();
-                    password_set = true;
+                    Log.d(enteredPassword, secondPassword);
+                    if(secondPassword.equals(enteredPassword)){
+                        password_set = true;
+                        finish();
+                    }
+                    else {
+                        editor.clear();
+                        textView.setText("Draw Pattern");
+                        isEnteringFirstTime = true;
+                    }
+                editor.commit();
                 }
             }
 
             @Override
             public void onPatternAbandoned() {
-                confirmButton.setEnabled(true);
-                retryButton.setEnabled(true);
+
             }
 
             @Override
@@ -115,8 +93,6 @@ public class PasswordSetActivity extends AppCompatActivity {
 
             @Override
             public void animateInEnd() {
-                confirmButton.setEnabled(true);
-                retryButton.setEnabled(true);
             }
 
             @Override
@@ -126,8 +102,6 @@ public class PasswordSetActivity extends AppCompatActivity {
 
             @Override
             public void animateOutEnd() {
-                confirmButton.setEnabled(true);
-                retryButton.setEnabled(true);
             }
         });
     }
