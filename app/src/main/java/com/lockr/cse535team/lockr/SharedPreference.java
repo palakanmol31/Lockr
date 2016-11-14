@@ -81,6 +81,7 @@ public class SharedPreference {
         }
         else{
             Intent i = new Intent(context, PasswordSetActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
         }
         return null;
