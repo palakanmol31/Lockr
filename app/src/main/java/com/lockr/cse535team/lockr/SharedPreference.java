@@ -72,20 +72,22 @@ public class SharedPreference {
         return (ArrayList<String>) locked;
     }
 
-    public String getPassword(Context context) {
+    public Boolean getPassword(Context context) {
         SharedPreferences passwordPref;
         passwordPref = context.getSharedPreferences(AppLockConstants.MyPREFERENCES, Context.MODE_PRIVATE);
         if (passwordPref.contains(AppLockConstants.PASSWORD)) {
             Intent i = new Intent(context, ScreenLock.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
+            return true;
         }
         else{
             Intent i = new Intent(context, PasswordSetActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
+            return false;
         }
-        return null;
+
     }
 }
 

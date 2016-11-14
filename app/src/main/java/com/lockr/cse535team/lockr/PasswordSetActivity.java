@@ -23,16 +23,13 @@ import java.util.ArrayList;
 
 public class PasswordSetActivity extends AppCompatActivity {
     ConnectPatternView view;;
-//    Button confirmButton, retryButton;
     TextView textView;
     boolean isEnteringFirstTime = true;
-    boolean isEnteringSecondTime = false;
     static String enteredPassword, secondPassword;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     Context context;
     boolean password_set = false;
-    String pinpassword, secondpassword;
 
 
 
@@ -48,7 +45,6 @@ public class PasswordSetActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(AppLockConstants.MyPREFERENCES, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         patternData();
-
 
     }
     public void patternData(){
@@ -66,18 +62,19 @@ public class PasswordSetActivity extends AppCompatActivity {
                 else {
                     Log.d("isEnteringFirstTime", "From false value");
                     secondPassword = String.valueOf(result);
-                    editor.putString(AppLockConstants.PASSWORD, secondPassword);
+                    editor.putString("secondpassword", secondPassword);
                     Log.d(enteredPassword, secondPassword);
                     if(secondPassword.equals(enteredPassword)){
                         password_set = true;
                         finish();
                     }
                     else {
+                        Toast.makeText(getApplicationContext(),"You entered wrong pattern second time. Let's start over", Toast.LENGTH_SHORT).show();
                         editor.clear();
                         textView.setText("Draw Pattern");
                         isEnteringFirstTime = true;
                     }
-                editor.commit();
+                    editor.commit();
                 }
             }
 
@@ -105,5 +102,4 @@ public class PasswordSetActivity extends AppCompatActivity {
             }
         });
     }
-
     }

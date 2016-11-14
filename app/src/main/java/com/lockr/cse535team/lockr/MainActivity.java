@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,30 +28,24 @@ public class MainActivity extends AppCompatActivity
         AppListing Fragment1;
         PasswordSetActivity passwordSetActivity;
         SharedPreference check;
+        ScreenLock screenLock;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-//        setContentView(R.layout.activity_password_set);
-
 //        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
 //        startActivity(intent);
 //        Toast.makeText(getApplicationContext(), "If you have not allowed , allow App Lock so that it can work properly", Toast.LENGTH_LONG).show();
-
 
         sessionClass = new SessionClass(this);
         if(sessionClass.checkLogin()) {
             check = new SharedPreference();
             check.getPassword(getApplicationContext());
         }
-        /*passwordSetActivity = new PasswordSetActivity(this);
-        passwordSetActivity.CheckIfpasswordset();*/
-//            Intent i = new Intent(MainActivity.this, PasswordSetActivity.class);
-//        startActivity(i);
 
-       /* LockApp CheckCurrent = new LockApp(this);
-        CheckCurrent.start();*/
 
 
         setContentView(R.layout.activity_main);
@@ -87,6 +82,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
@@ -111,7 +107,6 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 

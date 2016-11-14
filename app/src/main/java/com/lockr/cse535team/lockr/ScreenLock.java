@@ -21,7 +21,6 @@ public class ScreenLock extends Activity {
     ConnectPatternView view;
     Context context;
     SharedPreferences passwordPref;
-
     protected void onCreate(Bundle savedInstanceState) {
         context = getApplicationContext();
         super.onCreate(savedInstanceState);
