@@ -77,6 +77,7 @@ public class SharedPreference {
         passwordPref = context.getSharedPreferences(AppLockConstants.MyPREFERENCES, Context.MODE_PRIVATE);
         if (passwordPref.contains(AppLockConstants.PASSWORD)) {
             Intent i = new Intent(context, ScreenLock.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
         }
         else{

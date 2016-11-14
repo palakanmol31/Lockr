@@ -32,6 +32,7 @@ public class PasswordSetActivity extends AppCompatActivity {
     SharedPreferences.Editor editor;
     Context context;
     boolean password_set = false;
+    String pinpassword, secondpassword;
 
 
 
@@ -58,7 +59,6 @@ public class PasswordSetActivity extends AppCompatActivity {
                 if(isEnteringFirstTime) {
                     Log.d("isEnteringFirstTime", "From true value");
                     enteredPassword = String.valueOf(result);
-                    editor.putString("pinpassword", enteredPassword);
                     textView.setText("Redraw Pattern");
                     isEnteringFirstTime = false;
                     patternData();
@@ -66,7 +66,7 @@ public class PasswordSetActivity extends AppCompatActivity {
                 else {
                     Log.d("isEnteringFirstTime", "From false value");
                     secondPassword = String.valueOf(result);
-                    editor.putString("secondpassword", secondPassword);
+                    editor.putString(AppLockConstants.PASSWORD, secondPassword);
                     Log.d(enteredPassword, secondPassword);
                     if(secondPassword.equals(enteredPassword)){
                         password_set = true;
