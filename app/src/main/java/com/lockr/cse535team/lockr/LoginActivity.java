@@ -59,6 +59,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public static final int CONNECTION_TIMEOUT = 10000;
     public static final int READ_TIMEOUT = 15000;
     public static String userEmail = "", userPass = "";
+    SharedPreference check;
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -503,6 +504,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 //                startActivity(intent);
 //                LoginActivity.this.finish();
                 session.createLoginSession(userEmail,userPass);
+                check = new SharedPreference();
+                check.getPassword(getApplicationContext());
                 finish();
 
             } else if (result.equalsIgnoreCase("false")) {

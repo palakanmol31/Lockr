@@ -4,6 +4,9 @@
     <color name="black">#000000</color>
     <color name="primary">#3F51B5</color>
     <color name="primary_dark">#303F9F</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FFCC00</color>
     <color name="fbutton_default_color">#3eadeb</color>
     <color name="fbutton_default_shadow_color">#ff3493c8</color>
     <color name="fbutton_color_turquoise">#1abc9c</color>

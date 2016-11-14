@@ -14,16 +14,14 @@ import com.takwolf.android.lock9.Lock9View;
 
 public class ScreenLock extends Activity {
     SharedPreferences sharedPreferences;
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.popup_unlock);
-        Lock9View lock9View = (Lock9View) findViewById(R.id.lock_9_view);
+        Lock9View lock9View = (Lock9View) findViewById(R.id.connect);
 
         lock9View.setCallBack(new Lock9View.CallBack() {
             @Override
             public void onFinish(String password) {
-
                 if (sharedPreferences.getString(AppLockConstants.PASSWORD, "").matches(password)) {
                     Toast.makeText(getApplicationContext(), "Success : Password Match", Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(ScreenLock.this, LoadingActivity.class);

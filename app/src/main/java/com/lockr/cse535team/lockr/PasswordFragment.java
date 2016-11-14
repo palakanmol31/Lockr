@@ -49,7 +49,7 @@ public class PasswordFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.activity_password_set, container, false);
 
-        lock9View = (Lock9View) v.findViewById(R.id.lock_9_view);
+        lock9View = (Lock9View) v.findViewById(R.id.connect);
         confirmButton = (Button) v.findViewById(R.id.confirm);
         retryButton = (Button) v.findViewById(R.id.retry);
         textView = (TextView) v.findViewById(R.id.textView);

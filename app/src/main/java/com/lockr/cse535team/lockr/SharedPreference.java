@@ -1,6 +1,7 @@
 package com.lockr.cse535team.lockr;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
@@ -15,6 +16,7 @@ import java.util.List;
 
 public class SharedPreference {
     public static final String LOCKED_APP = "locked_app";
+
 
     public SharedPreference() {
         super();
@@ -74,9 +76,14 @@ public class SharedPreference {
         SharedPreferences passwordPref;
         passwordPref = context.getSharedPreferences(AppLockConstants.MyPREFERENCES, Context.MODE_PRIVATE);
         if (passwordPref.contains(AppLockConstants.PASSWORD)) {
-            return passwordPref.getString(AppLockConstants.PASSWORD, "");
+            Intent i = new Intent(context, ScreenLock.class);
+            context.startActivity(i);
         }
-        return "";
+        else{
+            Intent i = new Intent(context, PasswordSetActivity.class);
+            context.startActivity(i);
+        }
+        return null;
     }
 }
 

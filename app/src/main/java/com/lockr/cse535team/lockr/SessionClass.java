@@ -38,17 +38,15 @@ public class SessionClass extends Activity {
         editor.commit();
     }
 
-    public int checkLogin(){
-        if(!this.isLoggedIn()){
+    public boolean checkLogin(){
+        if(!this.isLoggedIn()) {
             Intent i = new Intent(_context, LoginActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             _context.startActivity(i);
-            return 0;
+            return false;
         }
-        else {
-            return 1;
-        }
+        return true;
     }
 
     public HashMap<String, String> getUserDetails(){
@@ -75,10 +73,6 @@ public class SessionClass extends Activity {
         _context.startActivity(i);
     }
 
-    /**
-     * Quick check for login
-     * **/
-    // Get Login State
     public boolean isLoggedIn(){
         return pref.getBoolean(IS_LOGIN, false);
     }

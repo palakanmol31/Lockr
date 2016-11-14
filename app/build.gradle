@@ -29,6 +29,7 @@ dependencies {
     compile 'com.android.support:design:25.0.0'
     compile 'com.android.support:support-v4:25.0.0'
     compile 'com.android.support:support-vector-drawable:25.0.0'
+    compile 'com.bcgdv.asia.lib:connectpattern:0.2'
     compile 'javax.mail:javax.mail-api:1.5.1'
     testCompile 'junit:junit:4.12'
     compile 'com.sun.mail:javax.mail:1.5.2'

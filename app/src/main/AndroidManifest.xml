@@ -59,6 +59,10 @@
             android:name=".ScreenLock"
             android:label="Lockr"
             android:excludeFromRecents="true"></activity>
+        <activity
+            android:name=".PasswordSetActivity"
+            android:label="Lockr"
+            android:excludeFromRecents="true"></activity>
 
         <activity
             android:name=".LoadingActivity"

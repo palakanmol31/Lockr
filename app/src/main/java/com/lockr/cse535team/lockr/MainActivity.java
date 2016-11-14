@@ -25,22 +25,32 @@ public class MainActivity extends AppCompatActivity
         SessionClass sessionClass;
         LogoutActivity newFragment;
         AppListing Fragment1;
+        PasswordSetActivity passwordSetActivity;
+        SharedPreference check;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+//        setContentView(R.layout.activity_password_set);
 
-        LockApp CheckCurrent = new LockApp(this);
-        CheckCurrent.start();
-        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-        startActivity(intent);
-
-        Toast.makeText(getApplicationContext(), "If you have not allowed , allow App Lock so that it can work properly", Toast.LENGTH_LONG).show();
+//        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+//        startActivity(intent);
+//        Toast.makeText(getApplicationContext(), "If you have not allowed , allow App Lock so that it can work properly", Toast.LENGTH_LONG).show();
 
 
         sessionClass = new SessionClass(this);
-        sessionClass.checkLogin();
+        if(sessionClass.checkLogin()) {
+            check = new SharedPreference();
+            check.getPassword(getApplicationContext());
+        }
+        /*passwordSetActivity = new PasswordSetActivity(this);
+        passwordSetActivity.CheckIfpasswordset();*/
+//            Intent i = new Intent(MainActivity.this, PasswordSetActivity.class);
+//        startActivity(i);
+
+       /* LockApp CheckCurrent = new LockApp(this);
+        CheckCurrent.start();*/
 
 
         setContentView(R.layout.activity_main);
