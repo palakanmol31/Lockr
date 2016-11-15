@@ -38,12 +38,15 @@ public class MainActivity extends AppCompatActivity
 //        startActivity(intent);
 //        Toast.makeText(getApplicationContext(), "If you have not allowed , allow App Lock so that it can work properly", Toast.LENGTH_LONG).show();
 
-
+//
         sessionClass = new SessionClass(this);
         if(sessionClass.checkLogin()) {
             check = new SharedPreference();
             check.getPassword(getApplicationContext());
         }
+
+
+
         /*passwordSetActivity = new PasswordSetActivity(this);
         passwordSetActivity.CheckIfpasswordset();*/
 //            Intent i = new Intent(MainActivity.this, PasswordSetActivity.class);

@@ -41,29 +41,27 @@ public class Settings extends ListActivity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
 
-                // selected item
                 String product = ((TextView) view).getText().toString();
 
                 if(product.equals("WIFI based Unlocking"))
                 {
                     Intent i = new Intent(getApplicationContext(), Wifi.class);
-                    // sending data to new activity
-                    //  i.putExtra("product", product);
                     startActivity(i);
                 }
 
                 else if (product.equals("Location based Unlocking"))
                 {
                     Intent i = new Intent(getApplicationContext(), SettingsLocation.class);
-                    // sending data to new activity
-                    //  i.putExtra("product", product);
                     startActivity(i);
                 }
                 else if(product.equals("Time based Unlocking"))
                 {
                     Intent i = new Intent(getApplicationContext(), TimeUnlocking.class);
-                    // sending data to new activity
-                    //  i.putExtra("product", product);
+                    startActivity(i);
+                }
+                else if(product.equals("Account Settings"))
+                {
+                    Intent i = new Intent(getApplicationContext(), AccountSettings.class);
                     startActivity(i);
                 }
 

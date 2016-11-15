@@ -87,6 +87,12 @@
         <item>Time based Unlocking</item>
 
     </string-array>
+
+    <string-array name="account_settings">
+        <item>Change Account Password</item>
+        <item>Lock Type</item>
+    </string-array>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
