@@ -14,10 +14,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 
 public class MainActivity extends AppCompatActivity
@@ -27,35 +29,84 @@ public class MainActivity extends AppCompatActivity
         AppListing Fragment1;
         PasswordSetActivity passwordSetActivity;
         SharedPreference check;
+        ToggleButton tg;
+        LockApp service;
+       // boolean shouldContinue=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-//        setContentView(R.layout.activity_password_set);
-
-//        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-//        startActivity(intent);
-//        Toast.makeText(getApplicationContext(), "If you have not allowed , allow App Lock so that it can work properly", Toast.LENGTH_LONG).show();
 
 
-        sessionClass = new SessionClass(this);
+
+        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+        startActivity(intent);
+        Toast.makeText(getApplicationContext(), "If you have not allowed , allow App Lock so that it can work properly", Toast.LENGTH_LONG).show();
+
+       /* sessionClass = new SessionClass(this);
         if(sessionClass.checkLogin()) {
             check = new SharedPreference();
             check.getPassword(getApplicationContext());
-        }
-        /*passwordSetActivity = new PasswordSetActivity(this);
-        passwordSetActivity.CheckIfpasswordset();*/
-//            Intent i = new Intent(MainActivity.this, PasswordSetActivity.class);
-//        startActivity(i);
+        }*/
+
+
 
        /* LockApp CheckCurrent = new LockApp(this);
         CheckCurrent.start();*/
 
-
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        service =new LockApp(getApplicationContext());
+        tg=(ToggleButton) findViewById(R.id.toggleButton);
+
+       /* tg.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+                @Override
+                public void onClick(View v)
+                {
+                    // your click actions go here
+                }
+               /* Toast.makeText(getApplicationContext(), "On button clicked", Toast.LENGTH_SHORT).show();
+                //Thread background = new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            Log.d("Thread Calling every 1 sec","YO clicked");
+                            service.run();
+                            Thread.sleep(1000);
+                        } catch (Throwable t) {
+                        }
+                    }
+                });
+
+                background.start();*/
+
+           /* }
+        });*/
+
+        tg.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                service.run();
+                // your click actions go here
+            }
+        });
+
+
+
+
+
+
+
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

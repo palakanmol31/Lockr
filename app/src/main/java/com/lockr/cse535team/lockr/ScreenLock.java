@@ -21,12 +21,14 @@ public class ScreenLock extends Activity {
     ConnectPatternView view;
     Context context;
     SharedPreferences passwordPref;
+    LockApp service;
 
     protected void onCreate(Bundle savedInstanceState) {
         context = getApplicationContext();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.popup_unlock);
         view = (ConnectPatternView) findViewById(R.id.connect);
+        service =new LockApp(getApplicationContext());
         patternData();
     }
 
@@ -42,6 +44,7 @@ public class ScreenLock extends Activity {
 //                Log.d("stored value", passwordPref.getString(AppLockConstants.PASSWORD,""));
                 if(passwordPref.getString(AppLockConstants.PASSWORD,"").equals(String.valueOf(result))) {
                     finish();
+                    service.run();
                 }
                 else {
                     Toast.makeText(getApplicationContext(),
