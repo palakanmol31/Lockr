@@ -3,6 +3,8 @@ package com.lockr.cse535team.lockr;
 
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Settings;
@@ -20,6 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
@@ -44,11 +48,21 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
         Toast.makeText(getApplicationContext(), "If you have not allowed , allow App Lock so that it can work properly", Toast.LENGTH_LONG).show();
 
-       /* sessionClass = new SessionClass(this);
+       sessionClass = new SessionClass(this);
         if(sessionClass.checkLogin()) {
             check = new SharedPreference();
             check.getPassword(getApplicationContext());
-        }*/
+        }
+
+       /* final PackageManager pm = getPackageManager();
+//get a list of installed apps.
+        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+
+        for (ApplicationInfo packageInfo : packages) {
+            Log.d("Installed package :" , packageInfo.packageName);
+            Log.d("Launch Activity",  ":"  + pm.getLaunchIntentForPackage(packageInfo.packageName));
+        }
+        */
 
 
 

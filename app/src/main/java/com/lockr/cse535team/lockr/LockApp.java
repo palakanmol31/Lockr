@@ -56,11 +56,10 @@ class LockApp extends Thread {
         Looper.loop();
     }*/
     public void run() {
-        if (Looper.myLooper() == null)
-        {
+        if (Looper.myLooper() == null) {
             Looper.prepare();
         }
-       // Looper.prepare();
+        // Looper.prepare();
 
         while (shouldcontinue) {
             System.out.println("---------run() Entered-----------");
@@ -79,23 +78,25 @@ class LockApp extends Thread {
 //            } else {
 //          if (activityOnTop.equals(pActivity) || activityOnTop.equals("com.lockr.cse535team.lockr")) {
 //            } else {
-
-            if(activityOnTop.equals("com.android.settings.Settings$UsageAccessSettingsActivity") )//|| activityOnTop.equals("com.google.android.apps.nexuslauncher.NexusLauncherActivity") ){
-            { shouldcontinue=false;
-                Intent i = new Intent(context, ScreenLock.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(i);
-
-            }
+            System.out.println("Value of shouldcontinue:" + shouldcontinue);
+            if (activityOnTop.equals("com.android.settings.Settings$UsageAccessSettingsActivity") || activityOnTop.equals("com.android.chrome") || activityOnTop.equals("com.android.camera") || activityOnTop.equals("com.google.android.apps.maps")) {
+                {
+                    shouldcontinue = false;
+                    Intent i = new Intent(context, ScreenLock.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(i);
+                    System.out.println("Value of shouldcontinue:" + shouldcontinue);
+                }
 
 
                 //Toast.makeText(context, pActivity, Toast.LENGTH_SHORT).show();
-               // pActivity = activityOnTop.toString();
+                // pActivity = activityOnTop.toString();
 //            }
 //        }
-        }
-        //System.out.println("---------Outside while()-----------");
+            }
+            //System.out.println("---------Outside while()-----------");
 
-     //Looper.loop();
+            //Looper.loop();
+        }
     }
 }
