@@ -21,6 +21,7 @@ public class ScreenLock extends Activity {
     ConnectPatternView view;
     Context context;
     SharedPreferences passwordPref;
+    int no_of_attempts=0;
 
     protected void onCreate(Bundle savedInstanceState) {
         context = getApplicationContext();
@@ -44,9 +45,15 @@ public class ScreenLock extends Activity {
                     finish();
                 }
                 else {
-                    Toast.makeText(getApplicationContext(),
+                    no_of_attempts++;
+                    if(no_of_attempts<5)
+                    {Toast.makeText(getApplicationContext(),
                             "Password Mismatch!", Toast.LENGTH_LONG)
-                            .show();
+                            .show();}
+                    else
+                    {Toast.makeText(getApplicationContext(),
+                            "Limit Exceeded!", Toast.LENGTH_LONG)
+                            .show();}
                 }
 
 
