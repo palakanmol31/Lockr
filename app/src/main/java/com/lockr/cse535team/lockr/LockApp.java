@@ -1,83 +1,147 @@
 package com.lockr.cse535team.lockr;
 
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.app.Dialog;
+import android.app.Service;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.IBinder;
 import android.os.Looper;
+import android.provider.*;
+import android.provider.Settings;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.util.Log;
+import android.view.WindowManager;
+import android.widget.ImageView;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.TreeMap;
 
 /**
  * Created by rkotwal2 on 11/13/2016.
  */
 
-class LockApp extends Thread {
+public class LockApp extends Service {
 
-    /*public IBinder onBind(Intent arg0)
-    {
-        return null;
-    }*/
-
-    public String pActivity = "";
-    ActivityManager mActivityManager = null;
-    Context context = null;
-    boolean shouldcontinue=true;
-
-    public LockApp(Context con) {
-        context = con;
-
-    }
-
-
-
-
-    public void _stop()
-    {
-        shouldcontinue= false;
-    }
-    public void run() {
-        if (Looper.myLooper() == null) {
-            Looper.prepare();
+    private static final String TAG = LockApp.class.getSimpleName();
+    private Context context = null;
+    private Timer timer;
+    private WindowManager windowManager;
+    private Dialog dialog;
+    public static String currentApp = "";
+    public static String previousApp = "";
+    SharedPreference sharedPreference;
+    List<String> pakageName;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d(TAG, "onCreate: ");
+        context = getApplicationContext();
+        sharedPreference = new SharedPreference();
+        if(sharedPreference != null){
+            pakageName = sharedPreference.getLocked(context);
         }
-        // Looper.prepare();
 
-        while (shouldcontinue) {
-            System.out.println("---------run() Entered-----------");
-            String activityOnTop;
-            String c = Context.ACTIVITY_SERVICE;
-            ActivityManager mActivityManager = (ActivityManager) context.getSystemService(c);
-            System.out.println("---------run() still-----------");
-            List<ActivityManager.RunningTaskInfo> RunningTask = mActivityManager.getRunningTasks(1);
-            ActivityManager.RunningTaskInfo ar = RunningTask.get(0);
-            activityOnTop = ar.topActivity.getClassName();
-            System.out.println("---------Activity Running-----------");
-            System.out.println(activityOnTop);
-//            if (activityOnTop.equals("com.lockr.cse535team.lockr")) {
-//                pActivity = activityOnTop.toString();
-//
-//            } else {
-//          if (activityOnTop.equals(pActivity) || activityOnTop.equals("com.lockr.cse535team.lockr")) {
-//            } else {
-            System.out.println("Value of shouldcontinue:" + shouldcontinue);
-            //if (activityOnTop.equals("com.android.settings.Settings$UsageAccessSettingsActivity")) //|| activityOnTop.equals("com.android.chrome") || activityOnTop.equals("com.android.camera") || activityOnTop.equals("com.google.android.apps.maps")) {
-            if (activityOnTop.equals("com.google.android.apps.nexuslauncher.NexusLauncherActivity")){
-                shouldcontinue = false;
-                Intent i = new Intent(context, ScreenLock.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(i);
-                System.out.println("Value of shouldcontinue:" + shouldcontinue);
+        timer = new Timer(TAG);
+        timer.schedule(updateTask, 1000L, 1000L);
+
+
+    }
+
+    @Override
+    public void onDestroy() {
+        timer.cancel();
+    }
+
+    private TimerTask updateTask = new TimerTask() {
+        @Override
+        public void run() {
+            if (sharedPreference != null) {
+                pakageName = sharedPreference.getLocked(context);
             }
+            if (isConcernedAppIsInForeground()) {
+                Log.d(TAG, "run: will never be called");
+            } else {
+                Log.d(TAG, "run: Inside the calling fucntion" );
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Log.d(TAG, "run: "+  getTopAppName(context));
 
+                }
 
-            //Toast.makeText(context, pActivity, Toast.LENGTH_SHORT).show();
-            // pActivity = activityOnTop.toString();
-//            }
-//        }
+            }
         }
-        //System.out.println("---------Outside while()-----------");
-
-        //Looper.loop();
+    };
+    public static String getTopAppName(Context context) {
+        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        String strName = "";
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                strName = getLollipopFGAppPackageName(context);
+            } else {
+                strName = mActivityManager.getRunningTasks(1).get(0).topActivity.getClassName();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return strName;
     }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private static String getLollipopFGAppPackageName(Context ctx) {
+
+        try {
+            UsageStatsManager usageStatsManager = (UsageStatsManager) ctx.getSystemService("usagestats");
+            long milliSecs = 60 * 1000;
+            Date date = new Date();
+            List<UsageStats> queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, date.getTime() - milliSecs, date.getTime());
+            if (queryUsageStats.size() > 0) {
+                Log.i("LPU", "queryUsageStats size: " + queryUsageStats.size());
+            }
+            long recentTime = 0;
+            String recentPkg = "";
+            for (int i = 0; i < queryUsageStats.size(); i++) {
+                UsageStats stats = queryUsageStats.get(i);
+                if (i == 0 && !"org.pervacio.pvadiag".equals(stats.getPackageName())) {
+                    Log.i("LPU", "PackageName: " + stats.getPackageName() + " " + stats.getLastTimeStamp());
+                }
+                if (stats.getLastTimeStamp() > recentTime) {
+                    recentTime = stats.getLastTimeStamp();
+                    recentPkg = stats.getPackageName();
+                }
+            }
+            return recentPkg;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+
+    private boolean isConcernedAppIsInForeground() {
+    return false;
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        Log.d(TAG, "onBind: ");
+        return null;
+    }
+
+
 }
 
 

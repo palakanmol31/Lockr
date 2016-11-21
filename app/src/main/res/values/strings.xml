@@ -111,4 +111,7 @@
     <string name="admin_receiver_status_disabled">Disabled</string>
     <string name="sample_device_admin_description">Device Admin</string>
     <string name="add_admin_extra_app_text">You need admin access to use app</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

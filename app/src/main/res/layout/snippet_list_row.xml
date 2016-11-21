@@ -21,7 +21,7 @@
             android:id="@+id/app_name"
             android:layout_width="0sp"
             android:layout_height="wrap_content"
-            android:layout_weight=".3" />
+            android:layout_weight=".15" />
 
         <TextView
             android:id="@+id/app_paackage"
@@ -33,7 +33,7 @@
             android:id="@+id/togglebutton"
             android:layout_width="0sp"
             android:layout_height="wrap_content"
-            android:layout_weight=".1" />
+            android:layout_weight=".11" />
 
     </TableRow>
 

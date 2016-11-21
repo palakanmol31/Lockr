@@ -1,8 +1,10 @@
 package com.lockr.cse535team.lockr;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 import android.widget.ListView;
 import android.widget.ToggleButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,9 +27,13 @@ import java.util.List;
  */
 
 public class ApplicationAdapter extends ArrayAdapter<ApplicationInfo> {
+    private static final String TAG = ApplicationAdapter.class.getSimpleName();
     private List<ApplicationInfo> appsList = null;
+    private ArrayList<String> apps = null;
     private Context context;
     private PackageManager packageManager;
+    static TextView packageName;
+
 
     public ApplicationAdapter(Context context, int textViewResourceId,
                               List<ApplicationInfo> appsList) {
@@ -52,7 +59,7 @@ public class ApplicationAdapter extends ArrayAdapter<ApplicationInfo> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View view = convertView;
         if (null == view) {
             LayoutInflater layoutInflater = (LayoutInflater) context
@@ -60,33 +67,33 @@ public class ApplicationAdapter extends ArrayAdapter<ApplicationInfo> {
             view = layoutInflater.inflate(R.layout.snippet_list_row, null);
         }
 
-        ApplicationInfo applicationInfo = appsList.get(position);
+        final ApplicationInfo applicationInfo = appsList.get(position);
         if (null != applicationInfo) {
             TextView appName = (TextView) view.findViewById(R.id.app_name);
-            TextView packageName = (TextView) view.findViewById(R.id.app_paackage);
+            packageName = (TextView) view.findViewById(R.id.app_paackage);
             ImageView iconview = (ImageView) view.findViewById(R.id.app_icon);
 
             appName.setText(applicationInfo.loadLabel(packageManager));
             packageName.setText(applicationInfo.packageName);
             iconview.setImageDrawable(applicationInfo.loadIcon(packageManager));
         }
-       // final TableRow Tr=(TableRow) view.findViewById(R.id.nav_allApps);
+        // final TableRow Tr=(TableRow) view.findViewById(R.id.nav_allApps);
 
         final ToggleButton toggleButton = (ToggleButton) view.findViewById(R.id.togglebutton);
         toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // Toast.makeText(context, ApplicationAdapter[applicationInfo], Toast.LENGTH_SHORT).show());
-
-                if(toggleButton.isActivated()==true)      //selected
+                // Toast.makeText(context, ApplicationAdapter[applicationInfo], Toast.LENGTH_SHORT).show());
+                Log.d(TAG, "onClick: Button CLicked" );
+                if (toggleButton.isActivated())      //selected
                 {
-                    toggleButton.setEnabled(false);;
-
-                }
-                else
-                {
+                    toggleButton.setEnabled(false);
+                    Log.d(TAG, "onClick: Package name is:" + applicationInfo.packageName);
+                    apps.add(applicationInfo.packageName);
+                } else {
                     toggleButton.setEnabled(true);
-
+                    Log.d(TAG, "onClick: Package deselected:" + applicationInfo.packageName);
+                    apps.remove(applicationInfo.packageName);
                 }
 
             }

@@ -1,87 +1,52 @@
-package com.lockr.cse535team.lockr;
+package com.lockr.cse535team.lockr.fragments;
 
-import android.app.AlertDialog;
-import android.app.ListActivity;
+
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.lockr.cse535team.lockr.AllAppsActivity;
+import com.lockr.cse535team.lockr.ApplicationAdapter;
+import com.lockr.cse535team.lockr.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by rkotwal2 on 11/2/2016.
+ * A simple {@link Fragment} subclass.
  */
-
-public class AllAppsActivity extends ListActivity {
+public class AllApplicationFragment extends ListFragment {
 
     private PackageManager packageManager = null;
     private List<ApplicationInfo> applist = null;
     private ApplicationAdapter listadaptor = null;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.list_all);
-        packageManager = getPackageManager();
+        packageManager = getActivity().getPackageManager();
         new LoadApplications().execute();
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
-        /* MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.my_options_menu, menu);
-        */
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        boolean result = true;
-
-        switch (item.getItemId()) {
-            default: {
-                result = super.onOptionsItemSelected(item);
-                break;
-            }
-        }
-        return result;
-    }
-
-    private void displayAboutDialog() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("App Locker-Group27");
-        builder.setMessage("You are currently seeing all the installed apps on this phone");
-
-                /*builder.setPositiveButton("Know More", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://stacktips.com"));
-                        startActivity(browserIntent);
-                dialog.cancel();
-            }
-        });*/
-        builder.setNegativeButton("No Thanks!", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
+    public AllApplicationFragment() {
+        // Required empty public constructor
     }
 
     @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
+    public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-
         ApplicationInfo app = applist.get(position);
         try {
             Intent intent = packageManager
@@ -91,12 +56,19 @@ public class AllAppsActivity extends ListActivity {
                 startActivity(intent);
             }
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(AllAppsActivity.this, e.getMessage(),
+            Toast.makeText(getActivity(), e.getMessage(),
                     Toast.LENGTH_LONG).show();
         } catch (Exception e) {
-            Toast.makeText(AllAppsActivity.this, e.getMessage(),
+            Toast.makeText(getActivity(), e.getMessage(),
                     Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_all_application, container, false);
     }
 
     private List<ApplicationInfo> checkForLaunchIntent(List<ApplicationInfo> list) {
@@ -114,13 +86,13 @@ public class AllAppsActivity extends ListActivity {
         return applist;
     }
 
-    public class LoadApplications extends AsyncTask<Void, Void, Void> {
+    private class LoadApplications extends AsyncTask<Void, Void, Void> {
         private ProgressDialog progress = null;
 
         @Override
         protected Void doInBackground(Void... params) {
             applist = checkForLaunchIntent(packageManager.getInstalledApplications(PackageManager.GET_META_DATA));
-            listadaptor = new ApplicationAdapter(AllAppsActivity.this,
+            listadaptor = new ApplicationAdapter(getActivity(),
                     R.layout.snippet_list_row, applist);
 
             return null;
@@ -140,7 +112,7 @@ public class AllAppsActivity extends ListActivity {
 
         @Override
         protected void onPreExecute() {
-            progress = ProgressDialog.show(AllAppsActivity.this, null,
+            progress = ProgressDialog.show(getActivity(), null,
                     "Loading application info...");
             super.onPreExecute();
         }
@@ -150,4 +122,4 @@ public class AllAppsActivity extends ListActivity {
             super.onProgressUpdate(values);
         }
     }
-        }
+}
