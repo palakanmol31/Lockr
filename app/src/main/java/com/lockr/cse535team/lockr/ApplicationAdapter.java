@@ -19,6 +19,8 @@ import android.widget.Toast;
 import android.widget.ListView;
 import android.widget.ToggleButton;
 
+import com.lockr.cse535team.lockr.Singleton.MyApplication;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +35,7 @@ public class ApplicationAdapter extends ArrayAdapter<ApplicationInfo> {
     private Context context;
     private PackageManager packageManager;
     static TextView packageName;
-
+    MyApplication myApplication;
 
     public ApplicationAdapter(Context context, int textViewResourceId,
                               List<ApplicationInfo> appsList) {
@@ -41,6 +43,7 @@ public class ApplicationAdapter extends ArrayAdapter<ApplicationInfo> {
         this.context = context;
         this.appsList = appsList;
         packageManager = context.getPackageManager();
+        myApplication = MyApplication.getInstance();
     }
 
     @Override
@@ -78,7 +81,6 @@ public class ApplicationAdapter extends ArrayAdapter<ApplicationInfo> {
             iconview.setImageDrawable(applicationInfo.loadIcon(packageManager));
         }
         // final TableRow Tr=(TableRow) view.findViewById(R.id.nav_allApps);
-
         final ToggleButton toggleButton = (ToggleButton) view.findViewById(R.id.togglebutton);
         toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +97,7 @@ public class ApplicationAdapter extends ArrayAdapter<ApplicationInfo> {
                     Log.d(TAG, "onClick: Package deselected:" + applicationInfo.packageName);
                     apps.remove(applicationInfo.packageName);
                 }
-
+                myApplication.saveToPreferences(getContext(),"Locked",Serial);
             }
         });
         return view;

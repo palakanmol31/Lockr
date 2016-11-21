@@ -1,9 +1,7 @@
 package com.lockr.cse535team.lockr;
 
 
-import android.app.ActivityManager;
 import android.app.AppOpsManager;
-import android.app.FragmentTransaction;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -25,7 +23,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ToggleButton;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.lockr.cse535team.lockr.fragments.AllApplicationFragment;
