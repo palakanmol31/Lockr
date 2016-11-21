@@ -27,7 +27,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:allowClearUserData="false">
+        android:allowClearUserData="false"
+        android:name=".Singleton.MyApplication">
 
         <receiver android:name="SimpleWidgetProvider"
             android:icon = "@drawable/lock">

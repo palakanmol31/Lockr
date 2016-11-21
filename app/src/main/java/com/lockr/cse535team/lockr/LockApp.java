@@ -21,6 +21,9 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.lockr.cse535team.lockr.Singleton.MyApplication;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -38,24 +41,23 @@ import java.util.TreeMap;
 public class LockApp extends Service {
 
     private static final String TAG = LockApp.class.getSimpleName();
+
     private Context context = null;
     private Timer timer;
     private WindowManager windowManager;
     private Dialog dialog;
     public static String currentApp = "";
     public static String previousApp = "";
-    SharedPreference sharedPreference;
-    List<String> pakageName;
+    ArrayList<String> pakageName;
+    MyApplication myApplication;
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate: ");
         context = getApplicationContext();
-        sharedPreference = new SharedPreference();
-        if(sharedPreference != null){
-            pakageName = sharedPreference.getLocked(context);
-        }
-
+        myApplication = MyApplication.getInstance();
+        pakageName = myApplication.readFromPreferences(getApplicationContext(),"Locked", "Null");
+        Log.d(TAG, "onCreate: "+pakageName);
         timer = new Timer(TAG);
         timer.schedule(updateTask, 1000L, 1000L);
 
@@ -70,19 +72,12 @@ public class LockApp extends Service {
     private TimerTask updateTask = new TimerTask() {
         @Override
         public void run() {
-            if (sharedPreference != null) {
-                pakageName = sharedPreference.getLocked(context);
-            }
-            if (isConcernedAppIsInForeground()) {
-                Log.d(TAG, "run: will never be called");
-            } else {
-                Log.d(TAG, "run: Inside the calling fucntion" );
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Log.d(TAG, "run: "+  getTopAppName(context));
-
+            if (!pakageName.equals("Null")) {
+                if (isConcernedAppIsInForeground(pakageName,getTopAppName(context))) {
+                    Log.d(TAG, "run: will never be called");
                 }
-
             }
+
         }
     };
     public static String getTopAppName(Context context) {
@@ -101,8 +96,8 @@ public class LockApp extends Service {
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private static String getLollipopFGAppPackageName(Context ctx) {
-
         try {
+            //noinspection WrongConstant
             UsageStatsManager usageStatsManager = (UsageStatsManager) ctx.getSystemService("usagestats");
             long milliSecs = 60 * 1000;
             Date date = new Date();
@@ -130,8 +125,17 @@ public class LockApp extends Service {
     }
 
 
-    private boolean isConcernedAppIsInForeground() {
-    return false;
+    private boolean isConcernedAppIsInForeground(ArrayList<String> pakageName, String topAppName) {
+        Log.d(TAG, "isConcernedAppIsInForeground: Packges to compare = "+topAppName);
+
+        if(pakageName.contains(topAppName)){
+            Log.d(TAG, "isConcernedAppIsInForeground: NOOOOOOOOOOOOOO... DO NOT OPENNNNNN" );
+            Intent lockapp = new Intent(this, ScreenLock.class);
+            lockapp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            lockapp.putExtra("BLU",true);
+            startActivity(lockapp);
+        }
+        return false;
     }
 
     @Nullable

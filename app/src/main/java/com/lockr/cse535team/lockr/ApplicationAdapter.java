@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -23,6 +24,7 @@ import com.lockr.cse535team.lockr.Singleton.MyApplication;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Created by rkotwal2 on 11/2/2016.
@@ -44,6 +46,7 @@ public class ApplicationAdapter extends ArrayAdapter<ApplicationInfo> {
         this.appsList = appsList;
         packageManager = context.getPackageManager();
         myApplication = MyApplication.getInstance();
+        apps = new ArrayList<>();
     }
 
     @Override
@@ -82,24 +85,22 @@ public class ApplicationAdapter extends ArrayAdapter<ApplicationInfo> {
         }
         // final TableRow Tr=(TableRow) view.findViewById(R.id.nav_allApps);
         final ToggleButton toggleButton = (ToggleButton) view.findViewById(R.id.togglebutton);
-        toggleButton.setOnClickListener(new View.OnClickListener() {
+        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                // Toast.makeText(context, ApplicationAdapter[applicationInfo], Toast.LENGTH_SHORT).show());
-                Log.d(TAG, "onClick: Button CLicked" );
-                if (toggleButton.isActivated())      //selected
-                {
-                    toggleButton.setEnabled(false);
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    Log.d(TAG, "onClick: Package selected:" + applicationInfo.packageName);
+                    apps.add(applicationInfo.packageName.toString());
+                }else{
                     Log.d(TAG, "onClick: Package name is:" + applicationInfo.packageName);
-                    apps.add(applicationInfo.packageName);
-                } else {
-                    toggleButton.setEnabled(true);
-                    Log.d(TAG, "onClick: Package deselected:" + applicationInfo.packageName);
-                    apps.remove(applicationInfo.packageName);
+                    apps.remove(applicationInfo.packageName.toString());
                 }
-                myApplication.saveToPreferences(getContext(),"Locked",Serial);
+                myApplication.saveToPreferences(getContext(),"Locked",apps);
+                ArrayList<String> x = myApplication.readFromPreferences(getContext(),"Locked","NULL");
             }
         });
         return view;
     }
+
+
 };
