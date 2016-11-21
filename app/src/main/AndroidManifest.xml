@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.lockr.cse535team.lockr">
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.BIND_DEVICE_ADMIN"
+        tools:ignore="ProtectedPermissions"></uses-permission>
+    <uses-permission xmlns:tools="http://schemas.android.com/tools"
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/splash_img"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:allowClearUserData="false"
+        android:name=".Singleton.MyApplication">
+
+        <receiver android:name="SimpleWidgetProvider"
+            android:icon = "@drawable/lock">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/simple_widget_info" />
+        </receiver>
+
+
+        <activity android:name=".SplashScreen"
+            android:label="@string/app_name"
+            android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
+
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:excludeFromRecents="true"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".DeviceAdminSample"
+            android:label="Lockr"
+            android:description="@string/sample_device_admin_description"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data android:name="android.app.device_admin"
+                android:resource="@xml/device_admin_sample" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+        <activity
+            android:name=".Settings"
+            android:label="Settings"
+
+            android:excludeFromRecents="true">
+           </activity>
+        <activity
+            android:name=".Wifi"
+            android:label="Select Network"
+
+            android:excludeFromRecents="true"></activity>
+        <activity
+            android:name=".CameraActivity"
+            android:label="Select Network"
+            android:excludeFromRecents="true"></activity>
+
+        <activity
+            android:name=".SettingsLocation"
+            android:label="Select Location"
+
+            android:excludeFromRecents="true"></activity>
+        <activity
+            android:name=".SignUPActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:excludeFromRecents="true"/>
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login"
+            android:excludeFromRecents="true"></activity>
+        <activity
+        android:name=".ForgotPassword"
+        android:label="@string/title_activity_login"
+        android:excludeFromRecents="true"></activity>
+        <activity
+            android:name=".ScreenLock"
+            android:label="Lockr"
+            android:excludeFromRecents="true"></activity>
+        <activity
+            android:name=".PasswordSetActivity"
+            android:label="Lockr"
+            android:excludeFromRecents="true"></activity>
+
+        <activity
+            android:name=".LoadingActivity"
+            android:label="Lockr"
+            android:excludeFromRecents="true"></activity>
+
+
+        <activity
+            android:name=".TimeUnlocking"
+            android:label="Select Time"
+            android:excludeFromRecents="true"></activity>
+
+        <activity
+            android:name=".AllAppsActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:excludeFromRecents="true"/>
+
+        <activity
+            android:name=".AccountSettings"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:excludeFromRecents="true"/>
+
+        <activity
+            android:name=".changePassword"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:excludeFromRecents="true"/>
+
+        <activity
+            android:name=".lockType"
+            android:label="Select Lock Type"
+
+            android:excludeFromRecents="true"/>
+
+        <activity
+            android:name=".PinSet"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:excludeFromRecents="true"/>
+
+        <service android:name=".LockApp"
+            android:excludeFromRecents="true"/>
+    </application>
+
+</manifest>
