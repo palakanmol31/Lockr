@@ -6,10 +6,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
@@ -27,12 +29,16 @@ public class lockType extends Activity {
     Intent intent;
     private final int REQUEST_PERMISSION_FINGERPRINT = 1;
     Context context;
+    SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock_type);
         context = getApplicationContext();
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
+
         radioGroup = (RadioGroup) findViewById(R.id.lockType);
 
         radioButton1 = (RadioButton) findViewById(R.id.radioPattern);
@@ -53,6 +59,8 @@ public class lockType extends Activity {
                     //First check if pin is there in db
                     //if not set the pin
                     Log.d("Pin", "Intent shuld start");
+                    editor.putString("LockingType:","Pin");
+                    editor.apply();
                     intent = new Intent(lockType.this, PinSet.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);

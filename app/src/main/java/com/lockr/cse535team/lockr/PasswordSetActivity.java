@@ -73,6 +73,7 @@ public class PasswordSetActivity extends AppCompatActivity {
                     Log.d(enteredPassword, secondPassword);
                     if(secondPassword.equals(enteredPassword)){
                         password_set = true;
+                        editor.putString("LockingType:","pattern");
                         finish();
                     }
                     else {

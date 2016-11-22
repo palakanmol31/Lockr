@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -33,11 +34,14 @@ public class ScreenLock extends Activity {
     LinearLayout screenlockLayout;
     PinLockView mPinLockView;
     PinLockListener mPinLockListener;
-
+    SharedPreferences sharedPreferences;
     protected void onCreate(Bundle savedInstanceState) {
         context = getApplicationContext();
         super.onCreate(savedInstanceState);
-        String locktype = checkDefaultType();
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String locktype = sharedPreferences.getString("LockType", "pattern");
+
         if(locktype.equals("pattern")) {
             setContentView(R.layout.popup_unlock);
             screenlockLayout = (LinearLayout) findViewById(R.id.screenLockLayout);
@@ -53,11 +57,7 @@ public class ScreenLock extends Activity {
         isBlu = getIntent().hasExtra("BLU");
     }
 
-    private String checkDefaultType() {
-        Intent intent = getIntent();
-        String locktype = intent.getStringExtra("LockType");
-        return locktype;
-    }
+
 
     @Override
     public void onBackPressed() {
