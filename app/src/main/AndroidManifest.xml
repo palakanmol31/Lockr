@@ -160,7 +160,10 @@
             android:name=".PinSet"
             android:label="@string/app_name"
             android:excludeFromRecents="true"/>
-
+        <activity
+            android:name=".LogoutActivity"
+            android:label="@string/app_name"
+            android:excludeFromRecents="true"/>
         <service android:name=".LockApp"
             android:excludeFromRecents="true"/>
     </application>

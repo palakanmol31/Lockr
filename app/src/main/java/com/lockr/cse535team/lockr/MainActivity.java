@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -236,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
             case 3:
                 //Unlocked Application Fragment
                 return new UnlockedApplicationFragment();
+
             default:
                 return  new ServiceFragment();
         }
@@ -287,8 +287,12 @@ public class MainActivity extends AppCompatActivity {
             startActivity(in);
             return true;
         }
-
-        return super.onOptionsItemSelected(item);
+        else if (id == R.id.action_logout) {
+            Intent in = new Intent(getApplicationContext(), com.lockr.cse535team.lockr.LogoutActivity.class);
+            startActivity(in);
+            return true;
+        }
+                return super.onOptionsItemSelected(item);
     }
 
 

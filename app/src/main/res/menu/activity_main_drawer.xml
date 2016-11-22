@@ -18,14 +18,11 @@
             android:id="@+id/nav_unlockedApps"
             android:icon="@drawable/unlocked_apps"
             android:title="Unlocked Apps" />
+     
     </group>
 
     <item android:title="Switch User">
         <menu>
-            <item
-                android:id="@+id/nav_logout"
-                android:icon="@drawable/logout"
-                android:title="Logout" />
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
