@@ -32,6 +32,8 @@ import com.lockr.cse535team.lockr.fragments.LockedApplicationFragment;
 import com.lockr.cse535team.lockr.fragments.ServiceFragment;
 import com.lockr.cse535team.lockr.fragments.UnlockedApplicationFragment;
 
+import java.util.concurrent.ExecutionException;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -69,7 +71,14 @@ public class MainActivity extends AppCompatActivity {
         sessionClass = new SessionClass(this);
         if(sessionClass.checkLogin()) {
             check = new SharedPreference();
-            check.getPassword(getApplicationContext());
+            try {
+                Log.d(TAG, "onCreate: From check");
+                check.getPassword(getApplicationContext());
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         mDeviceAdminSample = new ComponentName(MainActivity.this, DeviceAdminSample.class);

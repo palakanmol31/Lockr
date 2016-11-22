@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -21,14 +22,15 @@ public class SessionClass extends Activity {
     private static final String PREF_NAME = "Session";
 
     private static final String IS_LOGIN = "IsLoggedIn";
-
-    public static final String KEY_NAME = "";
-
-    public static final String KEY_PASSWORD = "";
+    private static final String KEY_PATTERN = "pattern";
+    public static final String KEY_NAME = "name";
+    ArrayList<String> user;
+    public static final String KEY_PASSWORD = "password";
     public SessionClass(Context context){
         this._context = context;
         pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = pref.edit();
+        user = new ArrayList<>();
     }
 
     public void createLoginSession(String name, String password){
@@ -49,10 +51,8 @@ public class SessionClass extends Activity {
         return true;
     }
 
-    public HashMap<String, String> getUserDetails(){
-        HashMap<String, String> user = new HashMap<String, String>();
-        user.put(KEY_NAME, pref.getString(KEY_NAME, null));
-        user.put(KEY_PASSWORD, pref.getString(KEY_PASSWORD, null));
+    public ArrayList<String> getUserDetails(){
+        user.add(pref.getString(KEY_NAME, null));
         return user;
     }
 

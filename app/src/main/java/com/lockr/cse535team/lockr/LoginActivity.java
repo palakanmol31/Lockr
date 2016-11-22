@@ -42,6 +42,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -505,7 +506,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 //                LoginActivity.this.finish();
                 session.createLoginSession(userEmail,userPass);
                 check = new SharedPreference();
-                check.getPassword(getApplicationContext());
+                try {
+                    check.getPassword(getApplicationContext());
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 finish();
 
             } else if (result.equalsIgnoreCase("false")) {
