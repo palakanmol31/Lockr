@@ -65,6 +65,10 @@ public class lockType extends Activity {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
+                else if(radioButton.getText().equals("pattern")){
+                    editor.putString("LockingType:","Pin");
+                    editor.apply();
+                }
             }
         });
 

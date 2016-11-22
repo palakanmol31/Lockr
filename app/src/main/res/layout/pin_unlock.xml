@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fbutton_color_orange"
+    android:background="@color/white"
     android:orientation="vertical"
     android:gravity="center"
     android:id="@+id/screenLockLayout">
@@ -25,13 +25,27 @@
         android:gravity="center"
         android:textColor="@color/white" />
 
+    <com.andrognito.pinlockview.IndicatorDots
+        android:id="@+id/indicator_dots"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView6"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp" />
+
     <com.andrognito.pinlockview.PinLockView
         android:id="@+id/pin_lock_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="189dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@id/indicator_dots"
+        app:keypadButtonSize="72dp"
+        app:keypadTextSize="18dp"
+        app:keypadShowDeleteButton="false"
+        app:keypadTextColor="@color/fbutton_color_midnight_blue"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:background="@color/primary_dark"/>
+
 
     <Button
         android:text="Forgot pin?"

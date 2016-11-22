@@ -80,13 +80,14 @@ public class PinSet extends AppCompatActivity {
                 Log.d(enteredPassword, secondPassword);
                 if (secondPassword.equals(enteredPassword)) {
                     password_set = true;
+                    editor.putString("LockingType:","Pin");
                     finish();
                 } else {
                     editor.clear();
                     textView.setText("Enter Pin");
                     isEnteringFirstTime = true;
                 }
-                editor.commit();
+                editor.apply();
             }
 
         }

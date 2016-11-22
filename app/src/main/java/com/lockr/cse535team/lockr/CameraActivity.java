@@ -198,7 +198,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,
                             width, height, matrix, true);
 
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 1000,
+                    resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 50,
                             bytes);
 
                     // you can create a new file name "test.jpg" in sdcard

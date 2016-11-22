@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.andrognito.pinlockview.IndicatorDots;
 import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
 import com.bcgdv.asia.lib.connectpattern.ConnectPatternView;
@@ -33,14 +34,14 @@ public class ScreenLock extends Activity {
     Boolean isBlu = false;
     LinearLayout screenlockLayout;
     PinLockView mPinLockView;
-    PinLockListener mPinLockListener;
+    IndicatorDots mIndicatorDots;
     SharedPreferences sharedPreferences;
     protected void onCreate(Bundle savedInstanceState) {
         context = getApplicationContext();
         super.onCreate(savedInstanceState);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String locktype = sharedPreferences.getString("LockType", "pattern");
+        String locktype = sharedPreferences.getString("LockingType:", "pattern");
 
         if(locktype.equals("pattern")) {
             setContentView(R.layout.popup_unlock);
@@ -51,8 +52,14 @@ public class ScreenLock extends Activity {
         else if(locktype.equals("Pin")){
             setContentView(R.layout.pin_unlock);
             mPinLockView = (PinLockView) findViewById(R.id.pin_lock_view);
+            mIndicatorDots = (IndicatorDots) findViewById(R.id.indicator_dots);
+
+            mPinLockView.attachIndicatorDots(mIndicatorDots);
             mPinLockView.setPinLockListener(mPinLockListener);
-            pinData();
+
+
+            mPinLockView.setPinLength(6);
+
         }
         isBlu = getIntent().hasExtra("BLU");
     }
@@ -126,8 +133,7 @@ public class ScreenLock extends Activity {
 
     }
 
-    public void pinData() {
-        mPinLockListener = new PinLockListener() {
+        private PinLockListener mPinLockListener = new PinLockListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onComplete(String pin) {
@@ -172,6 +178,6 @@ public class ScreenLock extends Activity {
         };
     }
 
-}
+
 
 
