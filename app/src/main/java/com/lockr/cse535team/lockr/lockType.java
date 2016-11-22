@@ -26,11 +26,13 @@ public class lockType extends Activity {
     RadioButton radioButton, radioButton1, radioButton2, radioButton3;
     Intent intent;
     private final int REQUEST_PERMISSION_FINGERPRINT = 1;
-
+    Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock_type);
+        context = getApplicationContext();
         radioGroup = (RadioGroup) findViewById(R.id.lockType);
 
         radioButton1 = (RadioButton) findViewById(R.id.radioPattern);
@@ -52,8 +54,8 @@ public class lockType extends Activity {
                     //if not set the pin
                     Log.d("Pin", "Intent shuld start");
                     intent = new Intent(lockType.this, PinSet.class);
-                    startActivity(intent);
-
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
                 }
             }
         });

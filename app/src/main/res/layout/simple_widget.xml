@@ -7,9 +7,16 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:src="@drawable/lock"/>
+
+    <Button
+        android:text="Start Service"
+        android:layout_width="wrap_content"
+        android:layout_height="515dp"
+        android:id="@+id/actionButton"
+        android:layout_weight="0.55"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
 
 </LinearLayout>

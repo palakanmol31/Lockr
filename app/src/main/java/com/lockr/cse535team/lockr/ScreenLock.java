@@ -12,6 +12,8 @@ import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.andrognito.pinlockview.PinLockListener;
+import com.andrognito.pinlockview.PinLockView;
 import com.bcgdv.asia.lib.connectpattern.ConnectPatternView;
 import com.takwolf.android.lock9.Lock9View;
 
@@ -22,21 +24,39 @@ import java.util.ArrayList;
  */
 
 public class ScreenLock extends Activity {
+    private static final String TAG = ScreenLock.class.getSimpleName();
     ConnectPatternView view;
     Context context;
     SharedPreferences passwordPref;
     int no_of_attempts=0;
     Boolean isBlu = false;
     LinearLayout screenlockLayout;
+    PinLockView mPinLockView;
+    PinLockListener mPinLockListener;
 
     protected void onCreate(Bundle savedInstanceState) {
         context = getApplicationContext();
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.popup_unlock);
-        screenlockLayout = (LinearLayout) findViewById(R.id.screenLockLayout);
-        view = (ConnectPatternView) findViewById(R.id.connect);
-        patternData();
+        String locktype = checkDefaultType();
+        if(locktype.equals("pattern")) {
+            setContentView(R.layout.popup_unlock);
+            screenlockLayout = (LinearLayout) findViewById(R.id.screenLockLayout);
+            view = (ConnectPatternView) findViewById(R.id.connect);
+            patternData();
+        }
+        else if(locktype.equals("Pin")){
+            setContentView(R.layout.pin_unlock);
+            mPinLockView = (PinLockView) findViewById(R.id.pin_lock_view);
+            mPinLockView.setPinLockListener(mPinLockListener);
+            pinData();
+        }
         isBlu = getIntent().hasExtra("BLU");
+    }
+
+    private String checkDefaultType() {
+        Intent intent = getIntent();
+        String locktype = intent.getStringExtra("LockType");
+        return locktype;
     }
 
     @Override
@@ -53,14 +73,11 @@ public class ScreenLock extends Activity {
 
             public void onPatternEntered(ArrayList<Integer> result) {
                 passwordPref = context.getSharedPreferences(AppLockConstants.MyPREFERENCES, Context.MODE_PRIVATE);
-//                Log.d("entered value", String.valueOf(result));
-//                Log.d("stored value", passwordPref.getString(AppLockConstants.PASSWORD,""));
                 if(passwordPref.getString(AppLockConstants.PASSWORD,"").equals(String.valueOf(result))) {
                     if(isBlu){
                         finishAffinity();
                     }else{
                         finish();
-
                     }
                 }
                 else {
@@ -107,6 +124,52 @@ public class ScreenLock extends Activity {
             }
         });
 
+    }
+
+    public void pinData() {
+        mPinLockListener = new PinLockListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onComplete(String pin) {
+                passwordPref = context.getSharedPreferences(AppLockConstants.MyPREFERENCES_pin, Context.MODE_PRIVATE);
+                if(passwordPref.getString(AppLockConstants.PIN,"").equals(String.valueOf(pin))) {
+                    if(isBlu){
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            finishAffinity();
+                        }
+                    }else{
+                        finish();
+                    }
+                }
+                else {
+                    no_of_attempts++;
+                    if(no_of_attempts<5)
+                    {
+                        Toast.makeText(getApplicationContext(),
+                                "Password Mismatch!", Toast.LENGTH_LONG)
+                                .show();}
+                    else
+                    {
+                        Intent i = new Intent(context, CameraActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(i);
+                        Toast.makeText(getApplicationContext(),
+                                "Limit Exceeded!", Toast.LENGTH_LONG)
+                                .show();}
+                }
+            }
+
+
+            @Override
+            public void onEmpty() {
+                Log.d(TAG, "Pin empty");
+            }
+
+            @Override
+            public void onPinChange(int pinLength, String intermediatePin) {
+                Log.d(TAG, "Pin changed, new length " + pinLength + " with intermediate pin " + intermediatePin);
+            }
+        };
     }
 
 }

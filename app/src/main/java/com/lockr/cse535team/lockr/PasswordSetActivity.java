@@ -7,13 +7,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bcgdv.asia.lib.connectpattern.ConnectPatternView;
-import com.takwolf.android.lock9.Lock9View;
 
 import java.util.ArrayList;
 
@@ -31,7 +27,7 @@ public class PasswordSetActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     Context context;
-    boolean password_set = false;
+    static boolean password_set = false;
     String pinpassword, secondpassword;
 
 
@@ -48,6 +44,13 @@ public class PasswordSetActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(AppLockConstants.MyPREFERENCES, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         patternData();
+
+        if(password_set){
+            Intent intent = new Intent(this,ScreenLock.class);
+            intent.putExtra("LockType","pattern");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
 
 
     }
