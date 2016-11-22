@@ -1,16 +1,25 @@
 package com.lockr.cse535team.lockr;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.hardware.fingerprint.FingerprintManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyPermanentlyInvalidatedException;
+import android.security.keystore.KeyProperties;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -31,8 +40,23 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 
 /**
  * Created by rkotwal2 on 11/13/2016.
@@ -54,10 +78,23 @@ public class ScreenLock extends Activity {
     PinLockView mPinLockView;
     IndicatorDots mIndicatorDots;
     SharedPreferences sharedPreferences;
+
+    //classes for fingerprint access
+    private FingerprintManager mFingerprintManager;
+    private KeyguardManager mKeyguardManager;
+    private KeyStore mKeyStore;
+    private KeyGenerator mKeyGenerator;
+    private Cipher mCipher;
+    private FingerprintManager.CryptoObject cryptoObject;
+    FingerprintAuthenticationDialogFragment mFragment;
+    private static final String DIALOG_FRAGMENT_TAG = "myFragment";
+    private static final String SECRET_MESSAGE = "Very secret message";
+    /** Alias for our key in the Android Key Store */
+    private static final String KEY_NAME = "my_key";
+
     protected void onCreate(Bundle savedInstanceState) {
         context = getApplicationContext();
         super.onCreate(savedInstanceState);
-
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String locktype = sharedPreferences.getString("LockingType:", "pattern");
 
@@ -78,6 +115,19 @@ public class ScreenLock extends Activity {
 
             mPinLockView.setPinLength(6);
 
+        }
+        else if(locktype.equals("fingerprint")){
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    checkFingerprints();
+                }
+            } catch (NoSuchPaddingException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (KeyStoreException e) {
+                e.printStackTrace();
+            }
         }
         isBlu = getIntent().hasExtra("BLU");
     }
@@ -322,6 +372,159 @@ public class ScreenLock extends Activity {
 
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    private void checkFingerprints() throws NoSuchPaddingException, NoSuchAlgorithmException, KeyStoreException {
+        mKeyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+        mFingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
+
+        mKeyStore = KeyStore.getInstance("AndroidKeyStore");
+        mCipher = Cipher.getInstance(
+                KeyProperties.KEY_ALGORITHM_AES + "/"
+                        + KeyProperties.BLOCK_MODE_CBC + "/"
+                        + KeyProperties.ENCRYPTION_PADDING_PKCS7);
+        mFragment = new FingerprintAuthenticationDialogFragment();
+
+        if (!mKeyguardManager.isKeyguardSecure()) {
+            // Show a message that the user hasn't set up a fingerprint or lock screen.
+            Toast.makeText(this,
+                    "Secure lock screen hasn't set up.\n"
+                            + "Go to 'Settings -> Security -> Fingerprint' to set up a fingerprint",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
+        if (!mFingerprintManager.hasEnrolledFingerprints()) {
+            // This happens when no fingerprints are registered.
+            Toast.makeText(this,
+                    "Go to 'Settings -> Security -> Fingerprint' and register at least one fingerprint",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+        createKey();
+
+        if (initCipher()) {
+
+            // Show the fingerprint dialog. The user has the option to use the fingerprint with
+            // crypto, or you can fall back to using a server-side verified password.
+
+            cryptoObject =
+                    new FingerprintManager.CryptoObject(mCipher);
+            mFragment.setCryptoObject(new FingerprintManager.CryptoObject(mCipher));
+            boolean useFingerprintPreference = sharedPreferences
+                    .getBoolean(getString(R.string.use_fingerprint_to_authenticate_key),
+                            true);
+            if (useFingerprintPreference) {
+                mFragment.setStage(
+                        FingerprintAuthenticationDialogFragment.Stage.FINGERPRINT);
+            } else {
+                mFragment.setStage(
+                        FingerprintAuthenticationDialogFragment.Stage.PASSWORD);
+            }
+            mFragment.show(getFragmentManager(), DIALOG_FRAGMENT_TAG);
+        } else {
+            // This happens if the lock screen has been disabled or or a fingerprint got
+            // enrolled. Thus show the dialog to authenticate with their password first
+            // and ask the user if they want to authenticate with fingerprints in the
+            // future
+            mFragment.setCryptoObject(new FingerprintManager.CryptoObject(mCipher));
+            mFragment.setStage(
+                    FingerprintAuthenticationDialogFragment.Stage.NEW_FINGERPRINT_ENROLLED);
+            mFragment.show(getFragmentManager(), DIALOG_FRAGMENT_TAG);
+        }
+
+    }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean initCipher() {
+        try {
+
+            mKeyStore.load(null);
+            SecretKey key = (SecretKey) mKeyStore.getKey(KEY_NAME, null);
+            mCipher.init(Cipher.ENCRYPT_MODE, key);
+            return true;
+        } catch (KeyPermanentlyInvalidatedException e) {
+            return false;
+        } catch (KeyStoreException | CertificateException | UnrecoverableKeyException | IOException
+                | NoSuchAlgorithmException | InvalidKeyException e) {
+            throw new RuntimeException("Failed to init Cipher", e);
+        }
+    }
+
+    public void onPurchased(boolean withFingerprint) {
+        if (withFingerprint) {
+            // If the user has authenticated with fingerprint, verify that using cryptography and
+            // then show the confirmation message.
+            tryEncrypt();
+        } else {
+            // Authentication happened with backup password. Just show the confirmation message.
+            showConfirmation(null);
+        }
+    }
+
+    // Show confirmation, if fingerprint was used show crypto information.
+    private void showConfirmation(byte[] encrypted) {
+        if (encrypted != null) {
+            Toast.makeText(this, "Congratulations", Toast.LENGTH_LONG).show();
+            if(isBlu){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    finishAffinity();
+                }
+            }else{
+                finish();
+            }
+        }
+    }
+    private void tryEncrypt() {
+        try {
+            byte[] encrypted = mCipher.doFinal(SECRET_MESSAGE.getBytes());
+            showConfirmation(encrypted);
+        } catch (BadPaddingException | IllegalBlockSizeException e) {
+            Toast.makeText(this, "Failed to encrypt the data with the generated key. "
+                    + "Retry the purchase", Toast.LENGTH_LONG).show();
+            Log.e(TAG, "Failed to encrypt the data with the generated key." + e.getMessage());
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void createKey() {
+        // The enrolling flow for fingerprint. This is where you ask the user to set up fingerprint
+        // for your flow. Use of keys is necessary if you need to know if the set of
+        // enrolled fingerprints has changed.
+        try {
+            mKeyStore.load(null);
+            // Set the alias of the entry in Android KeyStore where the key will appear
+            // and the constrains (purposes) in the constructor of the Builder
+            mKeyGenerator = KeyGenerator.getInstance(
+                    KeyProperties.KEY_ALGORITHM_AES,
+                    "AndroidKeyStore");
+            mKeyGenerator.init(new KeyGenParameterSpec.Builder(KEY_NAME,
+                    KeyProperties.PURPOSE_ENCRYPT |
+                            KeyProperties.PURPOSE_DECRYPT)
+                    .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
+                    // Require the user to authenticate with a fingerprint to authorize every use
+                    // of the key
+                    .setUserAuthenticationRequired(true)
+                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
+                    .build());
+            mKeyGenerator.generateKey();
+        } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException
+                | CertificateException | IOException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 

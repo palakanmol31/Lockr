@@ -2,9 +2,7 @@ package com.lockr.cse535team.lockr;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -12,6 +10,7 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
@@ -24,12 +23,19 @@ import android.widget.Toast;
  */
 
 public class lockType extends Activity {
+    private static final String TAG = lockType.class.getSimpleName();
     RadioGroup radioGroup;
     RadioButton radioButton, radioButton1, radioButton2, radioButton3;
     Intent intent;
     private final int REQUEST_PERMISSION_FINGERPRINT = 1;
     Context context;
     SharedPreferences sharedPreferences;
+
+    private static final String DIALOG_FRAGMENT_TAG = "myFragment";
+    private static final String SECRET_MESSAGE = "Very secret message";
+    /** Alias for our key in the Android Key Store */
+    private static final String KEY_NAME = "my_key";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -46,9 +52,9 @@ public class lockType extends Activity {
         radioButton3 = (RadioButton) findViewById(R.id.radioFingerPrint);
 
         checkFingerprintVisibility();
-        radioButton1.setChecked(true);
         //If pattern in DB keep radio button checked
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 Log.d("From on Check changed", "Of radio button");
@@ -59,15 +65,17 @@ public class lockType extends Activity {
                     //First check if pin is there in db
                     //if not set the pin
                     Log.d("Pin", "Intent shuld start");
-                    editor.putString("LockingType:","Pin");
+                    editor.putString("LockingType:", "Pin");
                     editor.apply();
                     intent = new Intent(lockType.this, PinSet.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
-                }
-                else if(radioButton.getText().equals("pattern")){
-                    editor.putString("LockingType:","Pin");
+                } else if (radioButton1.getText().equals("Pattern")) {
+                    editor.putString("LockingType:", "pattern");
                     editor.apply();
+                } else {
+                        editor.putString("LockingType:", "fingerprint");
+                        editor.apply();
                 }
             }
         });
@@ -104,18 +112,21 @@ public class lockType extends Activity {
             } else {
                 // Everything is ready for fingerprint authentication
                 radioButton3.setVisibility(View.VISIBLE);
+
+
             }
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == REQUEST_PERMISSION_FINGERPRINT &&
+        if (requestCode == REQUEST_PERMISSION_FINGERPRINT &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "Please give fingerprint permissions", Toast.LENGTH_LONG).show();
             return;
         }
-        //checkFingerprints();
     }
+
 }

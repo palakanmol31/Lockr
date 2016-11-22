@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Lockr-LockingLogic 2.iml" filepath="$PROJECT_DIR$/Lockr-LockingLogic 2.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lockr.iml" filepath="$PROJECT_DIR$/lockr.iml" />
     </modules>
   </component>
 </project>
