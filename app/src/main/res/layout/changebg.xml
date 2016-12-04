@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/changebglayout">
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/changeBgRadioGroup">
+        <RadioButton
+            android:text="Default"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/DefaultRadioBtn" />
+        <RadioButton
+            android:text="Red"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/RedRadioBtn" />
+        <RadioButton
+            android:text="Green"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/GreenRadioBtn" />
+
+    </RadioGroup>
+
+    <Button
+        android:text="Change BG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="13dp"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="12dp"
+        android:id="@+id/button4"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:layout_below="@+id/changeBgRadioGroup"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_service"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Start Service" />
+        <item
+            android:id="@+id/nav_allApps"
+            android:icon="@drawable/all_apps"
+            android:title="All applications" />
+        <!--<item-->
+            <!--android:id="@+id/nav_lockedApps"-->
+            <!--android:icon="@drawable/lock"-->
+            <!--android:title="Locked Apps" />-->
+        <!--<item-->
+            <!--android:id="@+id/nav_unlockedApps"-->
+            <!--android:icon="@drawable/unlocked_apps"-->
+            <!--android:title="Unlocked Apps" />-->
+     <!---->
+    </group>
+
+    <item android:title="Switch User">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Send" />
+        </menu>
+    </item>
+
+</menu>

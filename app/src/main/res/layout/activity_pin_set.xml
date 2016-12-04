@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="2dp"
+        android:text="Set your new pin"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:id="@+id/textView6"
+        android:layout_marginTop="35dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/SetPinTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Set new pin"
+        android:padding="2dp"
+        android:gravity="center"
+        android:background="#ADD8E6"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:layout_below="@+id/textView6"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+    <com.andrognito.pinlockview.IndicatorDots
+        android:id="@+id/indicator_dots"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView6"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp" />
+
+    <com.andrognito.pinlockview.PinLockView
+        android:id="@+id/pin_lock_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/indicator_dots"
+        app:keypadButtonSize="72dp"
+        app:keypadTextSize="18dp"
+        app:keypadShowDeleteButton="false"
+        app:keypadTextColor="@color/fbutton_color_midnight_blue"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:background="@color/primary_dark"/>
+
+    <!--<Button-->
+        <!--android:text="Confirm"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginBottom="76dp"-->
+        <!--android:id="@+id/confirm"-->
+        <!--android:textAppearance="@style/TextAppearance.AppCompat.Display1" />-->
+
+    <!--<Button-->
+        <!--android:id="@+id/actionButton"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="1"-->
+        <!--android:text="Start Service"-->
+        <!--android:textAppearance="@style/TextAppearance.AppCompat"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_toRightOf="@+id/pin_lock_view"-->
+        <!--android:layout_toEndOf="@+id/pin_lock_view"-->
+        <!--android:layout_marginLeft="55dp"-->
+        <!--android:layout_marginStart="55dp"-->
+        <!--android:layout_marginBottom="389dp" />-->
+</RelativeLayout>
